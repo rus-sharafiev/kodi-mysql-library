@@ -201,7 +201,6 @@ header {
     grid: 50px / 120px 430px 1fr;
     align-items: center;
     justify-items: center;
-    gap: 10px;
 }
 .logo {
     grid-column: 1 / 2;

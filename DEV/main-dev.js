@@ -150,12 +150,23 @@ const createNav = async () => {
 }
 
 // Load content
-const loadImg = async (url, cls) => {
-    let img = new Image();
-    img.src = url;
-    img.setAttribute('class', cls);
+const proxyImage = (url) => {
+    if (!url) return;
+    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+  
+    return(googleProxyURL + encodeURIComponent(url));
+}
 
-    return img; // Promise
+const loadImg = async (url, cls) => {
+
+    return new Promise( (res) => {
+        let img = new Image();
+        img.src = url;
+        img.setAttribute('class', cls);
+        img.onload = () => {
+            res(img);
+        }
+    })
 };
 const loadTxt = async (text, tag, cls) => {
     if (text) {
@@ -179,11 +190,11 @@ const loadLink = async (src, imgWidth, url, cls) => {
     return link; // Promise
 }
 const loadArt = async (arts, id, type) => {
-    let Url = arts[id][type];
+    let url = proxyImage(arts[id][type]);
 
     return new Promise( (res) => {
         let img = new Image();
-        img.src = Url;
+        img.src = url;
         img.setAttribute('class', type);
         img.onload = () => {
             res(img); // Promise
