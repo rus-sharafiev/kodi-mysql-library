@@ -4,7 +4,7 @@
   "description": "Kodi Home Movies Library",
   "main": "app.jsx",
   "scripts": {
-    "watch": "esbuild app.jsx --outfile=build/index.js --bundle --minify --external:*.woff2 --watch",
+    "watch": "esbuild app.jsx --outfile=build/index.js --bundle --watch",
     "build": "esbuild app.jsx --outfile=build/index.js --bundle --minify --external:*.woff2"
   },
   "repository": {
