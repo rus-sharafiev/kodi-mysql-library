@@ -2,62 +2,32 @@ import './CSS/main.css';
 import './CSS/mobile.css';
 import './CSS/styles.css';
 
-import React from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import ReactDOM from 'react-dom/client';
 
-class NavButton extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div id={this.props.id} onClick={() => console.log(this.props.id)}>
-                <span className='material-symbols-rounded'>{this.props.symbol}</span>
-                {this.props.name}
-            </div>
-        )
-    }
-}
+const LoadImage = (props) => {
 
-class LoadImage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            src: this.props.src
-        };
-    }
-
-    proxyImage(url) {
+    const proxyImage = (url) => {
         if (!url) return;
         let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
         return(googleProxyURL + encodeURIComponent(url));
     }
 
-    loadArt(url) {
-        if (!url) return;
-        let proxyUrl = this.proxyImage(url);
-        return new Promise( (res) => {
-            let img = new Image();
-            img.src = proxyUrl;
-            img.onload = () => {
-                res(img.src);
-            }
-        })
-    }
-
-    render() {
-        return (
-            <img src={this.proxyImage(this.props.src)} className={this.props.cls} alt={this.props.cls}></img>
-        )
-    }
+    return (
+        <img 
+            src={proxyImage(props.src)} 
+            className={props.cls} 
+            alt={props.cls}
+            onLoad={() => {props.load(true)}}
+        />
+    )
 }
 
-class Tile extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+const Card = (props) => {
+    const [fanartLoaded, setFanartLoaded] = useState(false);
+    const [posterLoaded, setPosterLoaded] = useState(false);
 
-    ratingColor(rating) {
+    const ratingColor = (rating) => {
         if (!rating) return;
         let background;
         switch (true) {
@@ -73,77 +43,90 @@ class Tile extends React.Component {
         return background;
     }
 
-    render() {
-        return (            
-            <div className='tile'>
-                <LoadImage src={this.props.data.fanart} cls='fanart' />
-                <LoadImage src={this.props.data.poster} cls='poster' />
-                <div className='title'>{this.props.data.title}</div>
-                <div className='subtitle'>{this.props.data.subtitle}</div>
-                <div className='review'>{this.props.data.review}</div>
-                <div className='writer'>{this.props.data.writer}</div>
-                <div className='pg-rating'>{this.props.data.pg_rating}</div>
-                <div className='genre'>{this.props.data.genre}</div>
-                <div className='director'>{this.props.data.director}</div>
-                <div className='original-title'>{this.props.data.original_title}</div>
-                <div className='studio'>{this.props.data.studio}</div>
-                <div className='premiered-date'>{this.props.data.premiered_date}</div>
-                {this.props.data.rating && <div className='rating' style={{backgroundImage: this.ratingColor(this.props.data.rating)}}>{this.props.data.rating.toFixed(1)}</div>}
-            </div>
-        )
-    }
+    return (     
+        <div className='tile' style={(fanartLoaded && posterLoaded) ? {} : { opacity: '0' }}>
+            <LoadImage src={props.data.fanart} cls='fanart' load={setFanartLoaded} />
+            <LoadImage src={props.data.poster} cls='poster' load={setPosterLoaded} />
+            <div className='title'>{props.data.title}</div>
+            <div className='subtitle'>{props.data.subtitle}</div>
+            <div className='review'>{props.data.review}</div>
+            <div className='writer'>{props.data.writer}</div>
+            <div className='pg-rating'>{props.data.pg_rating}</div>
+            <div className='genre'>{props.data.genre}</div>
+            <div className='director'>{props.data.director}</div>
+            <div className='original-title'>{props.data.original_title}</div>
+            <div className='studio'>{props.data.studio}</div>
+            <div className='premiered-date'>{props.data.premiered_date}</div>
+            {props.data.rating && <div className='rating' style={{backgroundImage: ratingColor(props.data.rating)}}>{props.data.rating.toFixed(1)}</div>}
+        </div>
+    )
 }
 
-class Main extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            type: this.props.type,
-            content: []
-        };
-    }
+const Content = (props) => {
+    const [content, setContent] = useState([]);
 
-    componentDidMount() {
-        fetch(`db.php?type=${this.props.type}`)
+    useEffect(() => {
+        fetch(`db.php?type=${props.type}`)
             .then((response) => response.json())
-            .then((data) => this.setState({ content: data }))
-            .catch((error) => console.log(error))
+            .then((data) => setContent(data));        
+    }, [props.type]);
+
+    const loadCards = () => {
+            if (content.length != 0) return content.map(data => <Card key={data.id} data={data} />)
     }
 
-    render() {
-        return (
-            Object.entries(this.state.content).map(([id, data]) => <Tile key={id} data={data} />)
-        )
-    }
+    return (
+        loadCards()   
+    )
 }
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
+const LoadingAnimation = (props) => {
+    console.log(props.show)
+    return (
+        props.show ? <img src='IMG/cpi.svg' className='loading' alt='loading'></img> : null
+    )
+}
+
+const NavButton = (props) => {
+    const [isPending, startTransition] = useTransition();
+
+    const isActive = (id) => {
+        return id == props.active ? 'nav-active' : ''
     }
 
-    render() {
-        return ( 
-            <>            
-                <header>
-                    <img src='/IMG/kodi-logo-with-text.svg' className='logo' alt='logo'></img>
-                    <span className='title-in-header'>Домашняя библиотека фильмов и сериалов</span>
-                </header>
-                <main>
-                    <div id='main-top'></div>
-                    <div id='main-container'>
-                        <Main type='tvs' />
-                        <div className='gradient-top'></div>
-                        <div className='gradient-bottom'></div>
-                    </div>
-                </main>
-                <nav>
-                    <NavButton id='movies' symbol='Movie' name='Фильмы' />
-                    <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
-                </nav>
-            </>
-        );
+    const handleClick = () => {
+        startTransition(() => {
+            props.type(props.id)
+        })
     }
+    
+    return (
+        
+        <div id={props.id} className={isActive(props.id)} onClick={ handleClick }>
+            <span className='material-symbols-rounded'>{props.symbol}</span>
+            {props.name}
+        </div>
+    )
+}
+
+const App = () => {
+    const [activePage, setActivePage] = useState('movies');
+
+    return ( 
+        <>            
+            <header>
+                <img src='/IMG/kodi-logo-with-text.svg' className='logo' alt='logo'></img>
+                <span className='title-in-header'>Домашняя библиотека фильмов и сериалов</span>
+            </header>
+            <main>
+                <Content type={activePage} />
+            </main>      
+            <nav>
+                <NavButton id='movies' symbol='Movie' name='Фильмы' active={activePage} type={setActivePage} />
+                <NavButton id='tvs' symbol='Videocam' name='Сериалы' active={activePage} type={setActivePage} />
+            </nav>
+        </>
+    );
 }
 
 ReactDOM.createRoot(document.body).render(<App />);
