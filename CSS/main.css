@@ -161,41 +161,15 @@ main {
     border-radius: 8px;
     padding: 0;
     margin: 0 10px 0 0;
-    overflow: hidden;
-
-    display: grid;
-    grid: 0 1fr / 1fr;
-}
-/* #main-top {
-    grid-row: 1 / 2;
-    padding: 8px 0 0;
-    margin: 0 16px;
-    border-bottom: thin solid rgba(var(--md-sys-color-primary--rgb), 0.1);
-} */
-#main-container {
-    grid-row: 2 / 3;
     overflow-x: hidden;
     overflow-y: overlay;
     padding: 8px;
+    position: relative;
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
     justify-content: space-between;
     gap: 8px;
-}
-.gradient-top, .gradient-bottom {
-    position: absolute;
-    width: calc(100% - 105px);
-    height: 8px;
-    z-index: 10;
-}
-.gradient-top {
-    top: 50px;
-    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0)100%);
-}
-.gradient-bottom {
-    bottom: 10px;
-    background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0)100%);
 }
 
 /* Header -------------------------------------------------------- */
@@ -323,6 +297,7 @@ nav > div.nav-active > span:hover {
         "poster writer writer writer"
         "poster youtube pg-rating .";
     gap: 3px 10px;
+    transition: opacity 0.1s ease-in;
 }
 .fanart {
     margin: -5px;
