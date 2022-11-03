@@ -1,3 +1,4 @@
 node_modules
-/.hintrc
-/.htaccess
+build
+.hintrc
+.htaccess

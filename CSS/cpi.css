@@ -1,0 +1,57 @@
+@charset "utf-8";
+
+.circular-progress-indicator {
+    stroke-dasharray: 110 100;
+    animation: spin 4s linear infinite;
+    transform-origin: center;
+}
+
+@keyframes spin {
+    0% {
+        stroke-dashoffset: -113;
+        rotate: -90deg;
+    }
+    6.25% {
+        stroke-dashoffset: -205;
+        rotate: 0deg;
+    }
+    12.5% {
+        stroke-dashoffset: -210;
+        rotate: 90deg;
+    }
+    18.75% {
+        stroke-dashoffset: -290;
+        rotate: 180deg;
+    }
+    25% {
+        stroke-dashoffset: -310;
+        rotate: 270deg;
+    }
+    50% {
+        stroke-dashoffset: -323;
+        rotate: 450deg;
+    }
+
+    
+    56.25% {
+        stroke-dashoffset: -415;
+        rotate: 540deg;
+    }
+    62.5% {
+        stroke-dashoffset: -420;
+        rotate: 630deg;
+    }
+    68.75% {
+        stroke-dashoffset: -500;
+        rotate: 720deg;
+    }
+    75% {
+        stroke-dashoffset: -520;
+        rotate: 810deg;
+    }
+    100% {
+        stroke-dashoffset: -533;
+        rotate: 990deg;
+    }
+    
+}
