@@ -253,7 +253,7 @@ const App = () => {
         <>            
             <header>
                 <img src='IMG/logo.svg' className='logo' alt='logo'></img>
-                <span className='title-in-header'>KODI HOME MEDIA LIBRARY</span>
+                <span className='title-in-header'>KODI<span>HOME MEDIA LIBRARY</span></span>
             </header>
             <main>
                 <Content type={activePage} sort={sortContent} order={orderContent}/>
