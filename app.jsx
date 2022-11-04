@@ -3,9 +3,10 @@ import './CSS/mobile.css';
 import './CSS/styles.css';
 
 import React, { useState, useEffect } from 'react';
-import CircularProgressIndicator from './cpi.jsx';
 import ReactDOM from 'react-dom/client';
-// import {Workbox} from 'workbox-window';
+import { BrowserRouter, Routes, Route, NavLink, useParams, useLocation } from "react-router-dom";
+import CircularProgressIndicator from './cpi.jsx';
+import {Workbox} from 'workbox-window';
 
 // if ('serviceWorker' in navigator) {
 //     const wb = new Workbox('/sw.js');
@@ -31,7 +32,7 @@ const Card = (props) => {
     }
 
     return (     
-        <div className='card' style={{borderColor: `rgba(${ratingColor(props.data.rating)})`}}>
+        <div className='card' style={{borderColor: `rgba(${ratingColor(props.data.rating)}, 0.8)`}}>
             <img className='fanart' src={props.data.fanart} alt='fanart' />
             <img className='poster' src={props.data.poster} alt='poster' />
             <div className='title'>{props.data.title}</div>
@@ -49,7 +50,7 @@ const Card = (props) => {
             </a>
             {props.data.rating && 
                 <div className='rating' 
-                    style={{ backgroundImage: `linear-gradient(160deg, rgba(${ratingColor(props.data.rating)}, 0) 80%, rgb(${ratingColor(props.data.rating)}, 100%)` }}
+                    style={{ backgroundImage: `linear-gradient(160deg, rgba(${ratingColor(props.data.rating)}, 0) 80%, rgba(${ratingColor(props.data.rating)}, 0.8)` }}
                     >
                     {props.data.rating.toFixed(1)}
                 </div>}
@@ -58,21 +59,28 @@ const Card = (props) => {
 }
 
 const Content = (props) => {
+    let { type } = useParams();
+    const [contentType, setContentType] = useState(type);
     const [content, setContent] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    let location = useLocation();
 
     useEffect(() => {
-        fetch(`db.php?type=${props.type}`)
+        setContentType(type)
+    }, [location]);
+
+    useEffect(() => {
+        fetch(`db.php?type=${contentType}`)
             .then((response) => response.json())
             .then((unsortedArray) => sort(unsortedArray))
             .then((sortedArray) => preloadArray(sortedArray))
             .then((preloadedArray) => setContent(preloadedArray))
             .finally(() => setLoaded(true));
-    }, [props.type, props.sort, props.order, loaded]);
+    }, [contentType, props.sort, props.order, loaded]);
 
     useEffect(() => {
         if (loaded) setLoaded(false);
-    }, [props.type]);
+    }, [contentType]);
 
     const proxyImage = (url) => {
         if (!url) return;
@@ -132,12 +140,6 @@ const Content = (props) => {
         return array;
     }
 
-    const loadStartAnimation = (n) => {
-        for (let i = 0; i < n; i++) { 
-            <div className='start-loading'></div>
-        }
-    }
-
     return (
         <>
             { !loaded && <CircularProgressIndicator container='loading' timeout='500' /> }
@@ -145,29 +147,6 @@ const Content = (props) => {
                 ? content.map(data => <Card key={data.id} data={data}/>) 
                 : <div className='start-loading-text'> Загрузка приложения... </div> }
         </>        
-    )
-}
-
-const NavButton = (props) => {
-    const [fontsLoaded, SetFontsLoaded] = useState(false);
-
-    useEffect(() => {
-        document.fonts.load("24px Material Symbols Rounded").then(() => SetFontsLoaded(true));
-    }, [fontsLoaded]);
-
-    const isActive = (id) => {
-        return id == props.active ? 'nav-active' : ''
-    }
-
-    const handleClick = () => {
-        props.type(props.id)
-    }
-    
-    return (        
-        <div id={props.id} className={isActive(props.id)} onClick={ handleClick }>
-            <span className='material-symbols-rounded'>{ fontsLoaded ? props.symbol : null }</span>
-            {props.name}
-        </div>        
     )
 }
 
@@ -247,27 +226,44 @@ const Sort = (props) => {
     )
 }
 
+const NavButton = (props) => {
+    const [fontsLoaded, SetFontsLoaded] = useState(false);
+
+    useEffect(() => {
+        document.fonts.load("24px Material Symbols Rounded").then(() => SetFontsLoaded(true));
+    }, [fontsLoaded]);
+
+    return (
+        <NavLink to={`/${props.id}`} className={ ({ isActive }) => isActive ? 'nav-active' : null }>
+            <span className='material-symbols-rounded'>{ fontsLoaded ? props.symbol : null }</span>
+            {props.name}
+        </NavLink> 
+    )
+}
+
 const App = () => {
-    const [activePage, setActivePage] = useState('movies');
+    window.location.pathname === '/' ? window.location.pathname = '/movies' : null;
     const [sortContent, setSortContent] = useState('premiered');
     const [orderContent, setOrderContent] = useState('desc');
 
     return ( 
-        <>            
+        <>      
             <header>
                 <img src='IMG/logo.svg' className='logo' alt='logo'></img>
                 <span className='title-in-header'>KODI<span>HOME MEDIA LIBRARY</span></span>
             </header>
             <main>
-                <Content type={activePage} sort={sortContent} order={orderContent}/>
-            </main>      
+                <Routes>
+                    <Route path="/:type" element={ <Content sort={sortContent} order={orderContent}/> }/>
+                </Routes>
+            </main>
             <nav>
-                <NavButton id='movies' symbol='Movie' name='Фильмы' active={activePage} type={setActivePage} />
-                <NavButton id='tvs' symbol='Videocam' name='Сериалы' active={activePage} type={setActivePage} />
-                <Sort sort={setSortContent} order={setOrderContent}/>
+                <NavButton id='movies' symbol='Movie' name='Фильмы' />
+                <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
             </nav>
+            <Sort sort={setSortContent} order={setOrderContent}/>
         </>
     );
 }
 
-ReactDOM.createRoot(document.querySelector('root')).render(<App />);
+ReactDOM.createRoot(document.querySelector('root')).render(<BrowserRouter><App /></BrowserRouter>);

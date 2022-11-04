@@ -101,8 +101,8 @@
 		--md-sys-color-outline-variant: var(--md-sys-color-outline-variant-light);
 		--md-sys-color-scrim: var(--md-sys-color-scrim-light);
 	}
-/* } */
-/* @media (prefers-color-scheme: dark) {
+/* }
+@media (prefers-color-scheme: dark) {
 	:root {
 		--md-sys-color-primary: var(--md-sys-color-primary-dark);
 		--md-sys-color-primary--rgb: var(--md-sys-color-primary-dark--rgb);
