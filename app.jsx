@@ -44,6 +44,9 @@ const Card = (props) => {
             <div className='original-title'>{props.data.original_title}</div>
             <div className='studio'>{props.data.studio}</div>
             <div className='premiered-date'>{props.data.premiered_date}</div>
+            <a className='youtube ' href={props.data.youtube} target="_blank" rel="noopener noreferrer">
+                <img src='IMG/yt.svg' />
+            </a>
             {props.data.rating && 
                 <div className='rating' 
                     style={{ backgroundImage: `linear-gradient(160deg, rgba(${ratingColor(props.data.rating)}, 0) 80%, rgb(${ratingColor(props.data.rating)}, 100%)` }}
@@ -138,7 +141,7 @@ const Content = (props) => {
     return (
         <>
             { !loaded && <CircularProgressIndicator container='loading' timeout='500' /> }
-            {  content.length != 0 
+            { content.length != 0 
                 ? content.map(data => <Card key={data.id} data={data}/>) 
                 : <div className='start-loading-text'> Загрузка приложения... </div> }
         </>        
@@ -246,7 +249,7 @@ const Sort = (props) => {
 
 const App = () => {
     const [activePage, setActivePage] = useState('movies');
-    const [sortContent, setSortContent] = useState('rating');
+    const [sortContent, setSortContent] = useState('premiered');
     const [orderContent, setOrderContent] = useState('desc');
 
     return ( 

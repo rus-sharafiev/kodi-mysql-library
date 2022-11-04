@@ -3,24 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..150,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
-@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
-    .blur {
-        -webkit-backdrop-filter: saturate(150%) blur(10px);
-        backdrop-filter: saturate(150%) blur(10px);
-        background: linear-gradient(300deg, 
-        rgba(var(--md-sys-color-primary--rgb), 0.05), 
-        rgba(var(--md-sys-color-primary--rgb), 0.05)), 
-        rgba(var(--md-sys-color-surface--rgb), 0.7);
-    }
-}
-@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    .blur {
-        background: linear-gradient(300deg, 
-        rgba(var(--md-sys-color-primary--rgb), 0.05), 
-        rgba(var(--md-sys-color-primary--rgb), 0.05)), 
-        var(--md-sys-color-surface);
-    }
-}
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
@@ -139,7 +121,7 @@ header > span {
     align-items: baseline;
     gap: 10px;
 }
-header > span span {
+header > span > span {
     font-size: 22px;
 }
 
@@ -158,13 +140,12 @@ nav {
           -ms-user-select: none;
               user-select: none;
 }
-nav > div, nav > div > span {
+nav > div {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-nav > div {
     justify-content: center;
+
     font-size: 12px;
     font-weight: 500;
     color: var(--md-sys-color-on-surface-variant);
@@ -172,10 +153,14 @@ nav > div {
     cursor: pointer;
 }
 nav > div > span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     width: 56px;
     height: 32px;
     border-radius: 16px;
-    justify-content: center;
     font-variation-settings: 'FILL' 0, 'wght' 400, 'opsz' 24;
     transition: font-variation-settings 200ms cubic-bezier(0.2, 0, 0, 1);
 }
@@ -187,7 +172,7 @@ nav > div > span:hover {
 nav > div.nav-active {
     color: var(--md-sys-color-on-surface);
 }
-nav > div.nav-active > span {
+nav > div.nav-active span {
     background: var(--md-sys-color-secondary-container);
     color: var(--md-sys-color-on-secondary-container);
     font-variation-settings: 'FILL' 1, 'wght' 400, 'opsz' 24;
@@ -225,8 +210,8 @@ nav > div.nav-active > span:hover {
     z-index: 300;
 }
 .sort > div > span {
-    font-size: 24px;
-    min-width: 24px;
+    width: 24px;
+    height: 24px;
 }
 .sort > div:hover {
     max-width: 200px;
@@ -366,7 +351,6 @@ nav > div.nav-active > span:hover {
     letter-spacing: 0;
     opacity: 0.6;
 }
-
 
 /* loading animation --------------------------------------------- */
 .circular-progress-indicator {
