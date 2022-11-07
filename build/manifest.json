@@ -1,5 +1,5 @@
 {
-    "name": "Домашняя библиотека KODI",
+    "name": "KODI Home Library",
     "short_name": "KODI Library",
     "start_url": "/?source=pwa",
     "display": "standalone",
@@ -47,8 +47,8 @@
         "purpose": "maskable"
       }
     ],
-    "theme_color": "#1b4352",
-    "background_color": "#1b4352",
+    "theme_color": "#eef4f7",
+    "background_color": "#eef4f7",
     "description": "Домашняя библиотека фильмов и сериалов медиацентра KODI",
     "categories": ["Entertainment", "Movies", "TVs", "Library"]
   }

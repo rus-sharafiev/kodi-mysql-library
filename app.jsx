@@ -9,29 +9,27 @@ import CircularProgressIndicator from './cpi.jsx';
 import Logo from './logo.jsx';
 import {Workbox} from 'workbox-window';
 
-// if ('serviceWorker' in navigator) {
-//     const wb = new Workbox('/sw.js');
-//     wb.register();
-// }
-
-var prevScrollPosition = Math.round(window.scrollY);
-var scrollDown = true;
-
-const headerHide = () => {
-    let nav = document.querySelector('nav');
-    var currentScrollPosition = Math.round(window.scrollY);
-    if (prevScrollPosition < currentScrollPosition) {
-        if (!scrollDown) { nav.style.marginBottom = document.body.scrollHeight - window.scrollY - 64 + 'px' };
-        scrollDown = true;
-    }
-    if (prevScrollPosition > currentScrollPosition) {
-        if (scrollDown) { nav.style.marginBottom = document.body.scrollHeight - window.scrollY + 'px' };
-        scrollDown = false;
-    }
-    prevScrollPosition = currentScrollPosition;
+if ('serviceWorker' in navigator) {
+    const wb = new Workbox('/sw.js');
+    wb.register();
 }
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    var mobile = true;
+}
+
+if (mobile) {
+    var prevScrollPosition = window.scrollY;
+    const headerHide = () => {
+        var currentScrollPosition = window.scrollY;
+        if (prevScrollPosition < currentScrollPosition) { // scroll down
+            if (window.scrollY > 70) document.body.classList.add('scroll-down');
+        }
+        if (prevScrollPosition > currentScrollPosition) { // scroll up
+            document.body.classList.remove('scroll-down');
+        }
+        prevScrollPosition = currentScrollPosition;
+    }
     window.addEventListener('scroll', headerHide, false);
 }
 
@@ -45,7 +43,7 @@ const Card = (props) => {
         } else if (color > 120) {
             return `hsl(120 59% 88%)`
         } else {
-            return `linear-gradient(0, hsl(${color} 60% 50% / 20%), hsl(${color} 60% 50% / 20%)), var(--md-sys-color-surface)`
+            return `linear-gradient(0, hsl(${color} 60% 50% / 25%), hsl(${color} 60% 50% / 25%)), var(--md-sys-color-surface)`
         }
     }
 
@@ -178,10 +176,11 @@ let SortBtn = (props) => {
 
     return (
         <div 
-            id={type.id} 
+            id={type.id}
+            style={ !fontsLoaded ? { opacity: '0' } : null }
             onClick={ () => { count < props.arr.length - 1 ? setCount(count + 1) : setCount(0); }}
             >
-            <span className='material-symbols-rounded' style={type.style ? type.style : null} >{ fontsLoaded ? type.value : null }</span>
+            <span className='material-symbols-rounded' style={ type.style ? type.style : null }>{type.value}</span>
             { type.text }
         </div>
     )
@@ -260,19 +259,20 @@ const App = () => {
     const [orderContent, setOrderContent] = useState('desc');
 
     return ( 
-        <>
+        <>            
             <main>
                 <Routes>
                     <Route path="/:type" element={ <Content sort={sortContent} order={orderContent}/> }/>
                 </Routes>
             </main>
-            <Logo />
-            <header></header>
             <nav>
                 <NavButton id='movies' symbol='Movie' name='Фильмы' />
                 <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
             </nav>
+            {!mobile && <a href='https://github.com/rus-sharafiev/kodiMysqlLibrary' text='link to GitHub' className='git-hub' target="_blank" rel="noopener noreferrer">
+                <img src='IMG/gh.svg' alt='GitHub Logo'/></a>}
             <Sort sort={setSortContent} order={setOrderContent}/>
+            <Logo mobile={mobile} />
         </>
     );
 }
