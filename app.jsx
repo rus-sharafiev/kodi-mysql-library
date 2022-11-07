@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, NavLink, useParams, useLocation } from "react-router-dom";
 import CircularProgressIndicator from './cpi.jsx';
+import Logo from './logo.jsx';
 import {Workbox} from 'workbox-window';
 
 // if ('serviceWorker' in navigator) {
@@ -13,47 +14,59 @@ import {Workbox} from 'workbox-window';
 //     wb.register();
 // }
 
+var prevScrollPosition = Math.round(window.scrollY);
+var scrollDown = true;
+
+const headerHide = () => {
+    let nav = document.querySelector('nav');
+    var currentScrollPosition = Math.round(window.scrollY);
+    if (prevScrollPosition < currentScrollPosition) {
+        if (!scrollDown) { nav.style.marginBottom = document.body.scrollHeight - window.scrollY - 64 + 'px' };
+        scrollDown = true;
+    }
+    if (prevScrollPosition > currentScrollPosition) {
+        if (scrollDown) { nav.style.marginBottom = document.body.scrollHeight - window.scrollY + 'px' };
+        scrollDown = false;
+    }
+    prevScrollPosition = currentScrollPosition;
+}
+
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    window.addEventListener('scroll', headerHide, false);
+}
+
 const Card = (props) => {
 
-    const ratingColor = (rating) => {
-        if (!rating) return;
-        let color;
-        switch (true) {
-            case (rating < 5): color =  '220, 20, 60, 0'; break;
-            case (rating < 6): color = '255, 0, 0, 0'; break;
-            case (rating < 6.5): color = '255, 165, 0'; break;
-            case (rating < 7): color = '255, 215, 0'; break;
-            case (rating < 8): color = '154, 205, 50'; break;
-            case (rating < 9): color = '50, 205, 50'; break;
-            case (rating < 10): color = '0, 255, 0'; break;
-            case (rating >= 10): color = '0, 255, 0'; break;
+    let bgrdClr = (rating) => {
+        let color = (rating - 5.5) * 35;
+
+        if (color < 0 ) {
+            return `hsl(0 59% 88%)`
+        } else if (color > 120) {
+            return `hsl(120 59% 88%)`
+        } else {
+            return `linear-gradient(0, hsl(${color} 60% 50% / 20%), hsl(${color} 60% 50% / 20%)), var(--md-sys-color-surface)`
         }
-        return color;
     }
 
     return (     
-        <div className='card' style={{borderColor: `rgba(${ratingColor(props.data.rating)}, 0.8)`}}>
-            <img className='fanart' src={props.data.fanart} alt='fanart' />
-            <img className='poster' src={props.data.poster} alt='poster' />
-            <div className='title'>{props.data.title}</div>
-            <div className='subtitle'>{props.data.subtitle}</div>
-            <div className='review'>{props.data.review}</div>
-            <div className='writer'>{props.data.writer}</div>
-            <div className='pg-rating'>{props.data.pg_rating}</div>
-            <div className='genre'>{props.data.genre}</div>
-            <div className='director'>{props.data.director}</div>
-            <div className='original-title'>{props.data.original_title}</div>
-            <div className='studio'>{props.data.studio}</div>
-            <div className='premiered-date'>{props.data.premiered_date}</div>
-            <a className='youtube ' href={props.data.youtube} target="_blank" rel="noopener noreferrer">
+        <div className='card' style={{ background: bgrdClr(props.data.rating) }}>
+            <img className='card-fanart' src={props.data.fanart} alt='fanart' />
+            <img className='card-poster' src={props.data.poster} alt='poster' />
+            <div className='card-title'>{props.data.title}</div>
+            <div className='card-subtitle'>{props.data.subtitle}</div>
+            <div className='card-review'>{props.data.review}</div>
+            <div className='card-writer'>Автор сценария: {props.data.writer}</div>
+            <div className='card-pg-rating'>{props.data.pg_rating}</div>
+            <div className='card-genre'>{props.data.genre}</div>
+            <div className='card-director'>Режисер: {props.data.director}</div>
+            <div className='card-original-title'>{props.data.original_title}</div>
+            <div className='card-studio'>Студия: {props.data.studio}</div>
+            <div className='card-premiered-date'>Дата премьеры: {props.data.premiered_date}</div>
+            <a className='card-youtube ' href={props.data.youtube} target="_blank" rel="noopener noreferrer">
                 <img src='IMG/yt.svg' />
             </a>
-            {props.data.rating && 
-                <div className='rating' 
-                    style={{ backgroundImage: `linear-gradient(160deg, rgba(${ratingColor(props.data.rating)}, 0) 80%, rgba(${ratingColor(props.data.rating)}, 0.8)` }}
-                    >
-                    {props.data.rating.toFixed(1)}
-                </div>}
+            {props.data.rating && <div className='card-rating' ><span>Рейтинг TMDB </span>{props.data.rating.toFixed(1)}</div>}
         </div>
     )
 }
@@ -247,16 +260,14 @@ const App = () => {
     const [orderContent, setOrderContent] = useState('desc');
 
     return ( 
-        <>      
-            <header>
-                <img src='IMG/logo.svg' className='logo' alt='logo'></img>
-                <span className='title-in-header'>KODI<span>HOME MEDIA LIBRARY</span></span>
-            </header>
+        <>
             <main>
                 <Routes>
                     <Route path="/:type" element={ <Content sort={sortContent} order={orderContent}/> }/>
                 </Routes>
             </main>
+            <Logo />
+            <header></header>
             <nav>
                 <NavButton id='movies' symbol='Movie' name='Фильмы' />
                 <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
