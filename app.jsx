@@ -18,6 +18,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
     var mobile = true;
 }
 
+
 if (mobile) {
     var prevScrollPosition = window.scrollY;
     const headerHide = () => {
@@ -37,13 +38,18 @@ const Card = (props) => {
 
     let bgrdClr = (rating) => {
         let color = (rating - 5.5) * 35;
+        let l;
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            l = '45%';
+        } else { l = '21%' }
 
         if (color < 0 ) {
-            return `hsl(0 59% 88%)`
+            return `hsl(0 100% ${l})`
         } else if (color > 120) {
-            return `hsl(120 59% 88%)`
+            return `hsl(120 100% ${l})`
         } else {
-            return `linear-gradient(0, hsl(${color} 60% 50% / 25%), hsl(${color} 60% 50% / 25%)), var(--md-sys-color-surface)`
+            return `linear-gradient(0, hsl(${color} 100% ${l} / 14%), hsl(${color} 100% ${l} / 14%)), var(--md-sys-color-surface)`
         }
     }
 
@@ -258,6 +264,15 @@ const App = () => {
     const [sortContent, setSortContent] = useState('premiered');
     const [orderContent, setOrderContent] = useState('desc');
 
+    const [windowCtlOvrlVisible, setWindowCtlOvrlVisible] = useState(!mobile ? navigator.windowControlsOverlay.visible : false);
+    if (!mobile && ('windowControlsOverlay' in navigator)) {
+        navigator.windowControlsOverlay.addEventListener('geometrychange', (event) => {
+            if (event.visible) {
+                setWindowCtlOvrlVisible(true)
+            } else {setWindowCtlOvrlVisible(false)}
+        });
+    }
+
     return ( 
         <>            
             <main>
@@ -273,6 +288,7 @@ const App = () => {
                 <img src='IMG/gh.svg' alt='GitHub Logo'/></a>}
             <Sort sort={setSortContent} order={setOrderContent}/>
             <Logo mobile={mobile} />
+            {windowCtlOvrlVisible && <div id='pseudo-title-bar'>Домашняя библиотека фильмов и сериалов медиацентра KODI</div>}
         </>
     );
 }
