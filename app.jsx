@@ -18,7 +18,6 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
     var mobile = true;
 }
 
-
 if (mobile) {
     var prevScrollPosition = window.scrollY;
     const headerHide = () => {
@@ -45,11 +44,11 @@ const Card = (props) => {
         } else { l = '21%' }
 
         if (color < 0 ) {
-            return `hsl(0 100% ${l})`
+            return `linear-gradient(0, hsl(0 100% ${l} / 10%), hsl(0 100% ${l} / 10%)), var(--md-sys-color-surface)`
         } else if (color > 120) {
-            return `hsl(120 100% ${l})`
+            return `linear-gradient(0, hsl(120 100% ${l} / 10%), hsl(120 100% ${l} / 10%)), var(--md-sys-color-surface)`
         } else {
-            return `linear-gradient(0, hsl(${color} 100% ${l} / 14%), hsl(${color} 100% ${l} / 14%)), var(--md-sys-color-surface)`
+            return `linear-gradient(0, hsl(${color} 100% ${l} / 10%), hsl(${color} 100% ${l} / 10%)), var(--md-sys-color-surface)`
         }
     }
 
@@ -58,19 +57,19 @@ const Card = (props) => {
             <img className='card-fanart' src={props.data.fanart} alt='fanart' />
             <img className='card-poster' src={props.data.poster} alt='poster' />
             <div className='card-title'>{props.data.title}</div>
-            <div className='card-subtitle'>{props.data.subtitle}</div>
-            <div className='card-review'>{props.data.review}</div>
-            <div className='card-writer'>Автор сценария: {props.data.writer}</div>
-            <div className='card-pg-rating'>{props.data.pg_rating}</div>
-            <div className='card-genre'>{props.data.genre}</div>
-            <div className='card-director'>Режисер: {props.data.director}</div>
             <div className='card-original-title'>{props.data.original_title}</div>
+            <div className='card-genre'>{props.data.genre}</div>
+            <div className='card-subtitle'>{props.data.subtitle}</div>
             <div className='card-studio'>Студия: {props.data.studio}</div>
             <div className='card-premiered-date'>Дата премьеры: {props.data.premiered_date}</div>
+            <div className='card-director'>{ props.data.director ? 'Режисер:' : null } {props.data.director}</div>
+            <div className='card-writer'>{ props.data.writer && 'Автор сценария:' } {props.data.writer}</div>
+            <div className='card-review'>{props.data.review}</div>
             <a className='card-youtube ' href={props.data.youtube} target="_blank" rel="noopener noreferrer">
-                <img src='IMG/yt.svg' />
+                <img src='IMG/youtube.svg' /><span>You</span><span>Tube</span>
             </a>
-            {props.data.rating && <div className='card-rating' ><span>Рейтинг TMDB </span>{props.data.rating.toFixed(1)}</div>}
+            <div className='card-pg-rating'>{props.data.pg_rating}</div>
+            { props.data.rating && <div className='card-rating' ><span>Рейтинг TMDB </span>{props.data.rating.toFixed(1)}</div> }
         </div>
     )
 }
@@ -140,8 +139,7 @@ const Content = (props) => {
                     fist = a.premiered_date;
                     second = b.premiered_date;
                     break;
-            }
-    
+            }    
             switch (props.order) {
                 case 'asc':
                     if (fist < second) { return -1; }
@@ -193,7 +191,7 @@ let SortBtn = (props) => {
 }
 
 const Sort = (props) => {
-    const [sort, setSort] = useState('rating');
+    const [sort, setSort] = useState('premiered');
     const [order, setOrder] = useState('desc');
 
     useEffect(() => {
@@ -283,12 +281,12 @@ const App = () => {
             <nav>
                 <NavButton id='movies' symbol='Movie' name='Фильмы' />
                 <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
-            </nav>
+            </nav>            
+            {windowCtlOvrlVisible && <div id='pseudo-title-bar'>Домашняя библиотека фильмов и сериалов медиацентра KODI</div>}
             {!mobile && <a href='https://github.com/rus-sharafiev/kodiMysqlLibrary' text='link to GitHub' className='git-hub' target="_blank" rel="noopener noreferrer">
                 <img src='IMG/gh.svg' alt='GitHub Logo'/></a>}
             <Sort sort={setSortContent} order={setOrderContent}/>
             <Logo mobile={mobile} />
-            {windowCtlOvrlVisible && <div id='pseudo-title-bar'>Домашняя библиотека фильмов и сериалов медиацентра KODI</div>}
         </>
     );
 }
