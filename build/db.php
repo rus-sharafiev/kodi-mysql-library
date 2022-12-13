@@ -1,20 +1,19 @@
 <?php
 header("Content-Type: application/json; charset=UTF-8");
 
-$mysqli = new mysqli("localhost", "kodi", "kodi", "MyVideos119");
-
-if ($mysqli -> connect_errno) {
-    echo "Не удалось подключиться к MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+try {
+    $mysqli = new mysqli("localhost", "kodi", "kodi", "MyVideos119");
+} catch (mysqli_sql_exception $e) {
+    exit(json_encode(['status' => 'error', 'error' => $e->getMessage()], JSON_UNESCAPED_UNICODE));
 }
 
 if (!$mysqli -> set_charset("utf8")) {
-    printf("Ошибка при загрузке набора символов utf8: %s\n", $mysqli->error);
     exit();
 }
 
 $output = Array();
 
-if ($_GET['type'] == 'movies') {
+if (($_GET['type'] ?? NULL) == 'movies') {
 
     $query = "SELECT * FROM movie;";
 
@@ -59,21 +58,23 @@ if ($_GET['type'] == 'movies') {
         preg_match('/<thumb[^>]*>(.*?)<\/thumb>/', $c20, $fanarts);
         $yt = substr($c19, -11);
         $pg = substr($pg_rating, 6);
+        $poster = $posters[1];
+        $fanart = $fanarts[1];
     
         $output[$idMovie] = [
             'id' => $idMovie,
             'title' => $title,
             'review' => $review, 
             'subtitle' => $subtitle, 
-            'writer' => $writer, 
-            'poster' => $posters[1], 
+            'writer' => $writer,
+            'poster' => str_replace('original', 'w342', $poster), 
             'pg_rating' => $pg, 
             'genre' => $genre, 
             'director' => $director, 
             'original_title' => $original_title, 
             'studio' => $studio, 
-            'youtube' => 'https://www.youtube.com/watch?v='.$yt, 
-            'fanart' => $fanarts[1], 
+            'youtube' => 'https://www.youtube.com/watch?v='.$yt,
+            'fanart' => str_replace('original', 'w780', $fanart),
             'country' => $country,
             'movies_set' => $movies_set, 
             'premiered_date' => $premiered
@@ -102,7 +103,7 @@ if ($_GET['type'] == 'movies') {
     echo json_encode(array_values($output), JSON_UNESCAPED_UNICODE);
     $stmt -> close();
 
-} elseif ($_GET['type'] == 'tvs') {
+} elseif (($_GET['type'] ?? NULL) == 'tvs') {
 
     $query = "SELECT * FROM tvshow";
 
@@ -145,18 +146,20 @@ if ($_GET['type'] == 'movies') {
         preg_match('/<thumb[^>]*>(.*?)<\/thumb>/', $c11, $fanarts);
         $yt = substr($c16, -11);
         $pg = substr($pg_rating, 6);
+        $poster = $posters[1];
+        $fanart = $fanarts[1];
 
         $output[$idShow] = [
             'id' => $idShow,
             'title' => $title,
             'review' => $review,
-            'poster' => $posters[1], 
+            'poster' => str_replace('original', 'w342', $poster), 
             'pg_rating' => $pg, 
             'genre' => $genre,
             'original_title' => $original_title, 
             'studio' => $studio, 
             'youtube' => 'https://www.youtube.com/watch?v='.$yt, 
-            'fanart' => $fanarts[1],
+            'fanart' => str_replace('original', 'w780', $fanart),
             'premiered_date' => $premiered
         ];
     }

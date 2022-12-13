@@ -3,7 +3,7 @@ import React from 'react';
 const desktop = 
 <div className='logo-container'>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-        viewBox="0 0 322.4 579.8" style={{enableBackground: 'new 0 0 322.4 579.8'}} xmlSpace="preserve" className='logo'>
+        viewBox="0 0 322.4 579.8" xmlSpace="preserve" className='logo'>
         <path className="st0" d="M46.3,108.4L7.6,147.2c-7,7-7,18.4,0,25.5l38.7,38.7c5.3,5.3,14.3,1.5,14.3-5.9v-91.1
             C60.6,106.9,51.6,103.2,46.3,108.4z"/>
         <path className="st0" d="M107,136.9h106c4.6,0,8.4-3.7,8.4-8.4V55c0-2.2-0.9-4.3-2.4-5.9L175,5.2c-7-7-18.4-7-25.5,0L101,53.8
@@ -75,7 +75,7 @@ const desktop =
 const mobile = 
 <div className='logo-mobile-container'>
     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-        viewBox="0 0 2721 304.1" style={{enableBackground: 'new 0 0 2721 304.1'}} xmlSpace="preserve" className='logo-mobile'>
+        viewBox="0 0 2721 304.1" xmlSpace="preserve" className='logo-mobile'>
         <path className="st1" d="M511,135.2c3.1,4.2,6.2,8.3,9.2,12.3c6.5,8.7,13.1,17.5,19.6,26.1c8.5,11.2,16.9,22.3,25.2,33.6
             c8.3,11,16.5,21.9,24.8,32.9c0.6,0.8,1,1.5,0.4,2.5c-0.4,1-1.3,1.3-2.3,1.3c-0.4,0-1,0-1.3,0c-7.7,0-15.2,0-22.9,0
             c-1.3,0-2.3-0.4-3.1-1.5c-14.4-19.2-28.8-38.5-43.1-57.5c-8.3-11-16.3-21.7-24.6-32.7c0,0-0.2-0.2-0.2-0.4c-1,1-1.9,1.9-2.9,2.7
@@ -148,7 +148,7 @@ const mobile =
     </svg>
 </div>;
 
-export default Logo = (props) => {
+export const Logo = (props: { mobile: boolean }) => {
     if (props.mobile) {
         return(mobile)
     } else {

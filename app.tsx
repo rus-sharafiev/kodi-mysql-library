@@ -5,19 +5,30 @@ import './CSS/styles.css';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, NavLink, useParams, useLocation } from "react-router-dom";
-import CircularProgressIndicator from './cpi.jsx';
-import Logo from './logo.jsx';
-import {Workbox} from 'workbox-window';
+import { CircularProgressIndicator}  from './cpi.jsx';
+import { Logo } from './logo.jsx';
+import { Workbox } from 'workbox-window';
 
-if ('serviceWorker' in navigator) {
-    const wb = new Workbox('/sw.js');
-    wb.register();
+// if ('serviceWorker' in navigator) {
+//     const wb = new Workbox('/sw.js');
+//     wb.register();
+// }
+
+// Listen when icons will be loaded
+const iconsLoaded = (event: any) => {
+    event.fontfaces.map( (font: any) => {
+        if (font.family == 'Material Symbols Rounded') {
+            document.getElementById("root")?.classList.remove('icons-hidden');
+        }
+    })
 }
+document.fonts.addEventListener("loadingdone", iconsLoaded);
 
+// Chech if mobile
+var mobile: boolean = false;
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    var mobile = true;
+    mobile = true;
 }
-
 if (mobile) {
     var prevScrollPosition = window.scrollY;
     const headerHide = () => {
@@ -33,11 +44,12 @@ if (mobile) {
     window.addEventListener('scroll', headerHide, false);
 }
 
-const Card = (props) => {
+// App
+const Card = (props: { data: { [index: string]: any } }) => {
 
-    let bgrdClr = (rating) => {
+    let bgrdClr = (rating: number) => {
         let color = (rating - 5.5) * 35;
-        let l;
+        let l: string;
 
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             l = '45%';
@@ -74,10 +86,10 @@ const Card = (props) => {
     )
 }
 
-const Content = (props) => {
+const Content = (props: { sort: string, order: string }) => {
     let { type } = useParams();
     const [contentType, setContentType] = useState(type);
-    const [content, setContent] = useState([]);
+    const [content, setContent] = useState<{ [index: string]: any }>([]);
     const [loaded, setLoaded] = useState(false);
     let location = useLocation();
 
@@ -85,26 +97,27 @@ const Content = (props) => {
         setContentType(type)
     }, [location]);
 
-    useEffect(() => {
-        fetch(`db.php?type=${contentType}`)
-            .then((response) => response.json())
-            .then((unsortedArray) => sort(unsortedArray))
-            .then((sortedArray) => preloadArray(sortedArray))
-            .then((preloadedArray) => setContent(preloadedArray))
-            .finally(() => setLoaded(true));
-    }, [contentType, props.sort, props.order, loaded]);
+    // useEffect(() => {
+    //     fetch(`db.php?type=${contentType}`)
+    //         .then((response) => response.json())
+    //         .then((unsortedArray) => sort(unsortedArray))
+    //         .then((sortedArray) => preloadArray(sortedArray))
+    //         .then((preloadedArray) => setContent(preloadedArray))
+    //         .finally(() => setLoaded(true));
+    // }, [contentType, props.sort, props.order, loaded]);
 
     useEffect(() => {
         if (loaded) setLoaded(false);
     }, [contentType]);
 
-    const proxyImage = (url) => {
-        if (!url) return;
-        let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-        return(googleProxyURL + encodeURIComponent(url));
+    const proxyImage = (url: string): string => {
+        if (url) {
+            let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+            return(googleProxyURL + encodeURIComponent(url));
+        } else return ''
     }
 
-    const imageLoader = async (url) => {
+    const imageLoader = async (url: string) => {
         return new Promise((res) => {
             let img = new Image();
             img.src = proxyImage(url);
@@ -114,8 +127,8 @@ const Content = (props) => {
         });
     }
 
-    const preloadArray = async (content) => {
-        let array = await Promise.all( content.map( async (item) => {
+    const preloadArray = async (content: {[index: string]: any}) => {
+        let array = await Promise.all( content.map( async (item: {[index: string]: any}) => {
             item.poster = await imageLoader(item.poster);
             item.fanart = await imageLoader(item.fanart);
             return item;
@@ -123,9 +136,11 @@ const Content = (props) => {
         return array;
     } 
 
-    const sort = async (content) => {
+    const sort = async (content: any) => {
+        let fist: string;
+        let second: string;
         let array = content.slice();
-        array.sort( (a, b) => {
+        array.sort( (a: any, b: any) => {
             switch (props.sort) {
                 case 'rating':            
                     fist = a.rating;
@@ -157,31 +172,25 @@ const Content = (props) => {
 
     return (
         <>
-            { !loaded && <CircularProgressIndicator container='loading' timeout='500' /> }
-            { content.length != 0 
-                ? content.map(data => <Card key={data.id} data={data}/>) 
+            { !loaded && <div className='cpi-container'><CircularProgressIndicator timeout={500} className='cpi' /></div> }
+            { content.length != 0
+                ? content.map( (data: {[index: string]: any}) => <Card key={data.id} data={data}/>) 
                 : <div className='start-loading-text'> Загрузка приложения... </div> }
         </>        
     )
 }
 
-let SortBtn = (props) => {
+let SortBtn = (props: { arr: any, id: (id: string) => void }) => {
     const [count, setCount] = useState(0);
-    const [fontsLoaded, SetFontsLoaded] = useState(false);
     let type = props.arr[count];
 
     useEffect(() => {
         props.id(type.id);
     }, [count]);
-    
-    useEffect(() => {
-        document.fonts.load("24px Material Symbols Rounded").then(() => SetFontsLoaded(true));
-    }, [fontsLoaded]);
 
     return (
         <div 
             id={type.id}
-            style={ !fontsLoaded ? { opacity: '0' } : null }
             onClick={ () => { count < props.arr.length - 1 ? setCount(count + 1) : setCount(0); }}
             >
             <span className='material-symbols-rounded' style={ type.style ? type.style : null }>{type.value}</span>
@@ -190,13 +199,14 @@ let SortBtn = (props) => {
     )
 }
 
-const Sort = (props) => {
+const Sort = (props: {sort: (sort: string) => void, order: (order: string) => void}) => {
     const [sort, setSort] = useState('premiered');
     const [order, setOrder] = useState('desc');
 
     useEffect(() => {
         props.sort(sort);
     }, [sort]);
+
     useEffect(() => {
         props.order(order);
     }, [order]);
@@ -242,16 +252,11 @@ const Sort = (props) => {
     )
 }
 
-const NavButton = (props) => {
-    const [fontsLoaded, SetFontsLoaded] = useState(false);
-
-    useEffect(() => {
-        document.fonts.load("24px Material Symbols Rounded").then(() => SetFontsLoaded(true));
-    }, [fontsLoaded]);
+const NavButton = (props: { id: string, symbol: string, name: string }) => {
 
     return (
-        <NavLink to={`/${props.id}`} className={ ({ isActive }) => isActive ? 'nav-active' : null }>
-            <span className='material-symbols-rounded'>{ fontsLoaded ? props.symbol : null }</span>
+        <NavLink to={`/${props.id}`} className={ ({ isActive }) => isActive ? 'nav-active' : undefined }>
+            <span className='material-symbols-rounded'>{props.symbol}</span>
             {props.name}
         </NavLink> 
     )
@@ -264,7 +269,7 @@ const App = () => {
 
     const [windowCtlOvrlVisible, setWindowCtlOvrlVisible] = useState(!mobile ? navigator.windowControlsOverlay.visible : false);
     if (!mobile && ('windowControlsOverlay' in navigator)) {
-        navigator.windowControlsOverlay.addEventListener('geometrychange', (event) => {
+        navigator.windowControlsOverlay.addEventListener('geometrychange', (event: any) => {
             if (event.visible) {
                 setWindowCtlOvrlVisible(true)
             } else {setWindowCtlOvrlVisible(false)}
@@ -283,7 +288,7 @@ const App = () => {
                 <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
             </nav>            
             {windowCtlOvrlVisible && <div id='pseudo-title-bar'>Домашняя библиотека фильмов и сериалов медиацентра KODI</div>}
-            {!mobile && <a href='https://github.com/rus-sharafiev/kodiMysqlLibrary' text='link to GitHub' className='git-hub' target="_blank" rel="noopener noreferrer">
+            {!mobile && <a href='https://github.com/rus-sharafiev/kodiMysqlLibrary' className='git-hub' target="_blank" rel="noopener noreferrer">
                 <img src='IMG/gh.svg' alt='GitHub Logo'/></a>}
             <Sort sort={setSortContent} order={setOrderContent}/>
             <Logo mobile={mobile} />
@@ -291,4 +296,4 @@ const App = () => {
     );
 }
 
-ReactDOM.createRoot(document.querySelector('root')).render(<BrowserRouter><App /></BrowserRouter>);
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<BrowserRouter><App /></BrowserRouter>);
