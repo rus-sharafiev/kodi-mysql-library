@@ -40,10 +40,14 @@ if (mobile) {
     const headerHide = () => {
         var currentScrollPosition = window.scrollY;
         if (prevScrollPosition < currentScrollPosition) { // scroll down
-            if (window.scrollY > 70) document.body.classList.add('scroll-down');
+            if (window.scrollY > 100 && !document.body.classList.contains('scroll-down')) {
+                document.body.classList.add('scroll-down');
+            }
         }
         if (prevScrollPosition > currentScrollPosition) { // scroll up
-            document.body.classList.remove('scroll-down');
+            if (document.body.classList.contains('scroll-down')) {
+                document.body.classList.remove('scroll-down');
+            }
         }
         prevScrollPosition = currentScrollPosition;
     }
@@ -59,20 +63,20 @@ const Card = (props: { data: { [index: string]: any } }) => {
 
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             l = '45%';
-        } else { l = '21%' }
+        } else { l = '20%' }
 
         if (color < 0 ) {
-            return `linear-gradient(0, hsl(0 100% ${l} / 10%), hsl(0 100% ${l} / 10%)), var(--md-sys-color-surface)`
+            return `linear-gradient(0, hsl(0 100% ${l} / 20%), hsl(0 100% ${l} / 20%)), var(--md-sys-color-surface)`
         } else if (color > 120) {
-            return `linear-gradient(0, hsl(120 100% ${l} / 10%), hsl(120 100% ${l} / 10%)), var(--md-sys-color-surface)`
+            return `linear-gradient(0, hsl(120 100% ${l} / 20%), hsl(120 100% ${l} / 20%)), var(--md-sys-color-surface)`
         } else {
-            return `linear-gradient(0, hsl(${color} 100% ${l} / 10%), hsl(${color} 100% ${l} / 10%)), var(--md-sys-color-surface)`
+            return `linear-gradient(0, hsl(${color} 100% ${l} / 20%), hsl(${color} 100% ${l} / 20%)), var(--md-sys-color-surface)`
         }
     }
 
     return (     
         <div className='card' style={{ background: bgrdClr(props.data.rating) }}>
-            <img className='card-fanart' src={props.data.fanart} alt='fanart' />
+            {!mobile && <img className='card-fanart' src={props.data.fanart} alt='fanart' />}
             <img className='card-poster' src={props.data.poster} alt='poster' />
             <div className='card-title'>{props.data.title}</div>
             <div className='card-original-title'>{props.data.original_title}</div>
@@ -178,7 +182,7 @@ const Content = (props: { sort: string, order: string }) => {
 
     return (
         <>
-            { !loaded && <div className='cpi-container'><CircularProgressIndicator timeout={500} className='cpi' /></div> }
+            { !loaded && <CircularProgressIndicator timeout={500} className='cpi' /> }
             { content.length != 0
                 ? content.map( (data: {[index: string]: any}) => <Card key={data.id} data={data}/>) 
                 : <div className='start-loading-text'> Загрузка приложения... </div> }
@@ -289,7 +293,8 @@ const App = () => {
                     <Route path="/:type" element={ <Content sort={sortContent} order={orderContent}/> }/>
                 </Routes>
             </main>
-            <nav>
+            <nav>                
+                <Logo mobile={mobile} />
                 <NavButton id='movies' symbol='Movie' name='Фильмы' />
                 <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
             </nav>            
@@ -297,7 +302,6 @@ const App = () => {
             {!mobile && <a href='https://github.com/rus-sharafiev/kodiMysqlLibrary' className='git-hub' target="_blank" rel="noopener noreferrer">
                 <img src='IMG/gh.svg' alt='GitHub Logo'/></a>}
             <Sort sort={setSortContent} order={setOrderContent}/>
-            <Logo mobile={mobile} />
         </>
     );
 }

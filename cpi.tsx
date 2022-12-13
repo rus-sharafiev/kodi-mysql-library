@@ -41,8 +41,8 @@ export const CircularProgressIndicator = (props: CircularProgressIndicator) => {
     let r = props.r ? props.r : 18;
 
     return(
-        <svg style={{opacity: opacity, transition: 'opacity 0.2s ease-in-out'}} xmlns="http://www.w3.org/2000/svg" 
-            className={props.className ? props.className : undefined}
+        <div className={props.className ? props.className : undefined} style={{opacity: opacity, transition: 'opacity 0.2s ease-in-out'}}>
+        <svg xmlns="http://www.w3.org/2000/svg" 
             width={props.width ? props.width : 50} 
             height={props.height ? props.height : 50}
             onClick={props.onClick}
@@ -74,5 +74,6 @@ export const CircularProgressIndicator = (props: CircularProgressIndicator) => {
                 />
             </circle>
         </svg>
+        </div>
     )
 }
