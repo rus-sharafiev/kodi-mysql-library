@@ -293,12 +293,12 @@ const App = () => {
                     <Route path="/:type" element={ <Content sort={sortContent} order={orderContent}/> }/>
                 </Routes>
             </main>
+            {windowCtlOvrlVisible && <div id='pseudo-title-bar'>Домашняя библиотека фильмов и сериалов медиацентра KODI</div>}
             <nav>                
                 <Logo mobile={mobile} />
                 <NavButton id='movies' symbol='Movie' name='Фильмы' />
                 <NavButton id='tvs' symbol='Videocam' name='Сериалы' />
-            </nav>            
-            {windowCtlOvrlVisible && <div id='pseudo-title-bar'>Домашняя библиотека фильмов и сериалов медиацентра KODI</div>}
+            </nav>
             {!mobile && <a href='https://github.com/rus-sharafiev/kodiMysqlLibrary' className='git-hub' target="_blank" rel="noopener noreferrer">
                 <img src='IMG/gh.svg' alt='GitHub Logo'/></a>}
             <Sort sort={setSortContent} order={setOrderContent}/>
