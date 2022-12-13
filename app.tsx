@@ -15,10 +15,10 @@ import { CircularProgressIndicator}  from './cpi.jsx';
 import { Logo } from './logo.jsx';
 import { Workbox } from 'workbox-window';
 
-// if ('serviceWorker' in navigator) {
-//     const wb = new Workbox('/sw.js');
-//     wb.register();
-// }
+if ('serviceWorker' in navigator) {
+    const wb = new Workbox('/sw.js');
+    wb.register();
+}
 
 // Listen when icons will be loaded
 const iconsLoaded = (event: any) => {
