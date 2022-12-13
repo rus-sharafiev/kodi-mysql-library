@@ -1,3 +1,9 @@
+declare global {
+    interface Navigator {
+        windowControlsOverlay: any;
+    }
+}
+
 import './CSS/main.css';
 import './CSS/mobile.css';
 import './CSS/styles.css';
@@ -97,14 +103,14 @@ const Content = (props: { sort: string, order: string }) => {
         setContentType(type)
     }, [location]);
 
-    // useEffect(() => {
-    //     fetch(`db.php?type=${contentType}`)
-    //         .then((response) => response.json())
-    //         .then((unsortedArray) => sort(unsortedArray))
-    //         .then((sortedArray) => preloadArray(sortedArray))
-    //         .then((preloadedArray) => setContent(preloadedArray))
-    //         .finally(() => setLoaded(true));
-    // }, [contentType, props.sort, props.order, loaded]);
+    useEffect(() => {
+        fetch(`db.php?type=${contentType}`)
+            .then((response) => response.json())
+            .then((unsortedArray) => sort(unsortedArray))
+            .then((sortedArray) => preloadArray(sortedArray))
+            .then((preloadedArray) => setContent(preloadedArray))
+            .finally(() => setLoaded(true));
+    }, [contentType, props.sort, props.order, loaded]);
 
     useEffect(() => {
         if (loaded) setLoaded(false);
