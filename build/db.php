@@ -13,176 +13,107 @@ if (!$mysqli -> set_charset("utf8")) {
 
 $output = Array();
 
-if (($_GET['type'] ?? NULL) == 'movies') {
+if (($_GET['type'] ?? NULL) === 'movies') {
 
-    $query = "SELECT * FROM movie;";
+    $query = "  SELECT idMovie, c00, c01, c03, c06, c12, c14, c15, c16, c18, c19, c21, premiered, tmdb.rating, poster.url, fanart.url
+                FROM movie
+                JOIN rating tmdb ON movie.idMovie = tmdb.media_id AND tmdb.rating_type = 'themoviedb'
+                JOIN art poster ON movie.idMovie = poster.media_id AND poster.type = 'poster'
+                JOIN art fanart ON movie.idMovie = fanart.media_id AND fanart.type = 'fanart'
+            ";
 
     if ($stmt = $mysqli -> prepare( $query )) {
         $stmt -> execute();
         $stmt -> bind_result(
-            $idMovie,   // id
-            $idFile,
+            $idMovie,
             $title,
             $review,
-            $c02,
-            $subtitle,	
-            $c04,
-            $c05,
+            $subtitle,
             $writer,
-            $c07,
-            $c08,	    // posters
-            $c09,
-            $c10,
-            $c11,
             $pg_rating,
-            $c13,
             $genre,
             $director,
             $original_title,
-            $c17,	
             $studio,
-            $c19,	    // YouTube
-            $c20,	    // fanarts
-            $country,
-            $smb_location,
-            $c23,
-            $movies_set,
-            $userrating,	
-            $premiered
+            $youtube,
+            $country,	
+            $premiered,
+            $rating,
+            $poster,
+            $fanart
         );
     }
     
     while ($stmt -> fetch()) {
     
-        preg_match('/<thumb aspect="poster"[^>]*>(.*?)<\/thumb>/', $c08, $posters);
-        preg_match('/<thumb[^>]*>(.*?)<\/thumb>/', $c20, $fanarts);
-        $yt = substr($c19, -11);
-        $pg = substr($pg_rating, 6);
-        $poster = $posters[1];
-        $fanart = $fanarts[1];
-    
-        $output[$idMovie] = [
+        $output[] = [
             'id' => $idMovie,
+            'poster' => str_replace('original', 'w342', $poster),
+            'fanart' => str_replace('original', 'w780', $fanart),
             'title' => $title,
             'review' => $review, 
             'subtitle' => $subtitle, 
             'writer' => $writer,
-            'poster' => str_replace('original', 'w342', $poster), 
-            'pg_rating' => $pg, 
+            'pg_rating' => substr($pg_rating, 6), 
             'genre' => $genre, 
             'director' => $director, 
             'original_title' => $original_title, 
             'studio' => $studio, 
-            'youtube' => 'https://www.youtube.com/watch?v='.$yt,
-            'fanart' => str_replace('original', 'w780', $fanart),
+            'youtube' => 'https://www.youtube.com/watch?v='. substr($youtube, -11),
             'country' => $country,
-            'movies_set' => $movies_set, 
-            'premiered_date' => $premiered
+            'premiered_date' => $premiered,
+            'rating' => $rating
         ];
-    }    
+    }
+    echo json_encode($output, JSON_UNESCAPED_UNICODE);
     $stmt -> close();
 
-    $query2 = "SELECT * FROM rating WHERE media_type='movie'";
+} elseif (($_GET['type'] ?? NULL) === 'tvs') {
 
-    if ($stmt = $mysqli -> prepare( $query2 )) {
-        $stmt -> execute();
-        $stmt -> bind_result(
-            $rating_id,
-            $media_id,
-            $media_type,
-            $rating_type,
-            $rating,
-            $votes,
-        );
-    }
-
-    while ($stmt -> fetch()) {
-        $output[$media_id]['rating'] = $rating;
-    }
-
-    echo json_encode(array_values($output), JSON_UNESCAPED_UNICODE);
-    $stmt -> close();
-
-} elseif (($_GET['type'] ?? NULL) == 'tvs') {
-
-    $query = "SELECT * FROM tvshow";
+    $query = "  SELECT idShow, c00, c01, c05, c08, c09, c13, c14, c16, tmdb.rating, poster.url, fanart.url
+                FROM tvshow
+                JOIN rating tmdb ON tvshow.idShow = tmdb.media_id AND tmdb.rating_type = 'tmdb'
+                JOIN art poster ON tvshow.idShow = poster.media_id AND poster.type = 'poster' AND poster.media_type = 'tvshow'
+                JOIN art fanart ON tvshow.idShow = fanart.media_id AND fanart.type = 'fanart' AND fanart.media_type = 'tvshow'
+            ";
 
     if ($stmt = $mysqli -> prepare( $query )) {
         $stmt -> execute();
         $stmt -> bind_result(
-            $idShow,
+            $id,
             $title,
             $review,
-            $c02,
-            $c03,
-            $c04,
             $premiered,
-            $c06,   //Poster
-            $c07,
             $genre,
             $original_title,
-            $c10,
-            $c11,   //fanart
-            $c12,
             $pg_rating,
             $studio,
-            $c15,
-            $c16,   // yt
-            $c17,
-            $c18,
-            $c19,
-            $c20,
-            $c21,
-            $c22,
-            $c23,
-            $userrating,
-            $duration 
+            $youtube,
+            $rating,
+            $poster,
+            $fanart
         );
     }
 
     while ($stmt -> fetch()) {
 
-        preg_match('/<thumb spoof="" cache="" aspect="poster"[^>]*>(.*?)<\/thumb>/', $c06, $posters);
-        preg_match('/<thumb[^>]*>(.*?)<\/thumb>/', $c11, $fanarts);
-        $yt = substr($c16, -11);
-        $pg = substr($pg_rating, 6);
-        $poster = $posters[1];
-        $fanart = $fanarts[1];
-
-        $output[$idShow] = [
-            'id' => $idShow,
+        $output[] = [
+            'id' => $id,
+            'poster' => str_replace('original', 'w342', $poster),
+            'fanart' => str_replace('original', 'w780', $fanart),
             'title' => $title,
             'review' => $review,
-            'poster' => str_replace('original', 'w342', $poster), 
-            'pg_rating' => $pg, 
-            'genre' => $genre,
+            'pg_rating' => substr($pg_rating, 6), 
+            'genre' => $genre, 
             'original_title' => $original_title, 
             'studio' => $studio, 
-            'youtube' => 'https://www.youtube.com/watch?v='.$yt, 
-            'fanart' => str_replace('original', 'w780', $fanart),
-            'premiered_date' => $premiered
+            'youtube' => 'https://www.youtube.com/watch?v='. substr($youtube, -11),
+            'premiered_date' => $premiered,
+            'rating' => $rating
         ];
     }
-    $stmt -> close();
 
-    $query2 = "SELECT * FROM rating WHERE media_type='tvshow'";
-
-    if ($stmt = $mysqli -> prepare( $query2 )) {
-        $stmt -> execute();
-        $stmt -> bind_result(
-            $rating_id,
-            $media_id,
-            $media_type,
-            $rating_type,
-            $rating,
-            $votes,
-        );
-    }
-    while ($stmt -> fetch()) {
-        $output[$media_id]['rating'] = $rating;
-    }
-
-    echo json_encode(array_values($output), JSON_UNESCAPED_UNICODE);
+    echo json_encode($output, JSON_UNESCAPED_UNICODE);
     $stmt -> close();
 
 } else {
