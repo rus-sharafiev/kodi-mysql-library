@@ -15,10 +15,10 @@ import { CircularProgressIndicator}  from './cpi.jsx';
 import { Logo } from './logo.jsx';
 import { Workbox } from 'workbox-window';
 
-if ('serviceWorker' in navigator) {
-    const wb = new Workbox('/sw.js');
-    wb.register();
-}
+// if ('serviceWorker' in navigator) {
+//     const wb = new Workbox('/sw.js');
+//     wb.register();
+// }
 
 // Listen when icons will be loaded
 const iconsLoaded = (event: any) => {
@@ -55,6 +55,39 @@ if (mobile) {
 }
 
 // App
+
+
+const Rating = (props) => {
+
+    let color = (props.rating - 5.5) * 35;
+    let x = props.width ? props.width / 2 : 25;
+    let y = props.height ? props.height / 2 : 25;
+    let r = props.r ? props.r : 18;
+    let k = (props.rating) / 10;
+    // 00 54 20
+    // 00 84 47
+    console.log(props.rating);
+
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            width={props.width ? props.width : 50} 
+            height={props.height ? props.height : 50}
+            >
+            <circle 
+                stroke='green' 
+                fill='none' 
+                strokeWidth={props.strokeWidth ? props.strokeWidth : 4} 
+                cx={x}
+                cy={y}
+                r={r}
+                transform={`rotate(-90 ${x} ${y})`}
+                strokeDasharray={`${(2 * Math.PI * r)} ${(2 * Math.PI * r)}`}
+                strokeDashoffset={(2 * Math.PI * r) - (2 * Math.PI * r * k)}
+            />
+        </svg>
+    )
+}
+
 const Card = (props: { data: { [index: string]: any } }) => {
 
     let bgrdClr = (rating: number) => {
@@ -92,6 +125,7 @@ const Card = (props: { data: { [index: string]: any } }) => {
             </a>
             <div className='card-pg-rating'>{props.data.pg_rating}</div>
             { props.data.rating && <div className='card-rating' ><span>Рейтинг TMDB </span>{props.data.rating.toFixed(1)}</div> }
+            {/* { props.data.rating && <div className='card-rating' >< Rating rating={props.data.rating.toFixed(1)} /></div> } */}
         </div>
     )
 }
@@ -181,7 +215,7 @@ const Content = (props: { sort: string, order: string }) => {
     }
 
     return (
-        <>
+        <>  
             { !loaded && <CircularProgressIndicator timeout={500} className='cpi' /> }
             { content.length != 0
                 ? content.map( (data: {[index: string]: any}) => <Card key={data.id} data={data}/>) 
