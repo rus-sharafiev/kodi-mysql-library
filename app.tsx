@@ -15,10 +15,10 @@ import { CircularProgressIndicator}  from './cpi.jsx';
 import { Logo } from './logo.jsx';
 import { Workbox } from 'workbox-window';
 
-// if ('serviceWorker' in navigator) {
-//     const wb = new Workbox('/sw.js');
-//     wb.register();
-// }
+if ('serviceWorker' in navigator) {
+    const wb = new Workbox('/sw.js');
+    wb.register();
+}
 
 // Listen when icons will be loaded
 const iconsLoaded = (event: any) => {
@@ -57,75 +57,88 @@ if (mobile) {
 // App
 
 
-const Rating = (props) => {
+const Rating = (props: {rating: number, radius: number}) => {
 
     let color = (props.rating - 5.5) * 35;
-    let x = props.width ? props.width / 2 : 25;
-    let y = props.height ? props.height / 2 : 25;
-    let r = props.r ? props.r : 18;
+    let r: number = props.radius;
+    let strokeWidth: number = props.radius / 4.5;
+    let width: number = (r + strokeWidth) * 2;
+    let height: number = (r + strokeWidth) * 2;
+
+    let x: number = width / 2;
+    let y: number = height / 2;
     let k = (props.rating) / 10;
-    // 00 54 20
-    // 00 84 47
-    console.log(props.rating);
+    let strokeColor: string;
+    let strokeColorBack: string;
+
+    if (color < 0 ) {
+        strokeColor = `hsl(0 80% 45%)`;
+        strokeColorBack = `hsl(0 50% 20%)`;
+    } else if (color > 120) {
+        strokeColor = `hsl(120 80% 45%)`;
+        strokeColorBack = `hsl(120 50% 20%)`;
+    } else {
+        strokeColor = `hsl(${color} 80% 45%)`;
+        strokeColorBack = `hsl(${color} 50% 20%)`;
+    }
 
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
-            width={props.width ? props.width : 50} 
-            height={props.height ? props.height : 50}
+            width={width} 
+            height={height}
             >
             <circle 
-                stroke='green' 
+                fill='#081c22'
+                cx={x}
+                cy={y}
+                r={r + strokeWidth}
+            />
+            <circle 
+                stroke={strokeColorBack}
                 fill='none' 
-                strokeWidth={props.strokeWidth ? props.strokeWidth : 4} 
+                strokeWidth={strokeWidth}
                 cx={x}
                 cy={y}
                 r={r}
+            />
+            <circle 
+                stroke={strokeColor}
+                fill='none' 
+                strokeWidth={strokeWidth} 
+                cx={x}
+                cy={y}
+                r={r}
+                strokeLinecap="round"
                 transform={`rotate(-90 ${x} ${y})`}
                 strokeDasharray={`${(2 * Math.PI * r)} ${(2 * Math.PI * r)}`}
                 strokeDashoffset={(2 * Math.PI * r) - (2 * Math.PI * r * k)}
             />
+            <text x={x} y={y} dominantBaseline="central" textAnchor="middle" className='rating-text'>{props.rating}</text>
         </svg>
     )
 }
 
 const Card = (props: { data: { [index: string]: any } }) => {
 
-    let bgrdClr = (rating: number) => {
-        let color = (rating - 5.5) * 35;
-        let l: string;
-
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            l = '45%';
-        } else { l = '20%' }
-
-        if (color < 0 ) {
-            return `linear-gradient(0, hsl(0 100% ${l} / 20%), hsl(0 100% ${l} / 20%)), var(--md-sys-color-surface)`
-        } else if (color > 120) {
-            return `linear-gradient(0, hsl(120 100% ${l} / 20%), hsl(120 100% ${l} / 20%)), var(--md-sys-color-surface)`
-        } else {
-            return `linear-gradient(0, hsl(${color} 100% ${l} / 20%), hsl(${color} 100% ${l} / 20%)), var(--md-sys-color-surface)`
-        }
-    }
-
     return (     
-        <div className='card' style={{ background: bgrdClr(props.data.rating) }}>
+        <div className='card'>
             {!mobile && <img className='card-fanart' src={props.data.fanart} alt='fanart' />}
             <img className='card-poster' src={props.data.poster} alt='poster' />
             <div className='card-title'>{props.data.title}</div>
             <div className='card-original-title'>{props.data.original_title}</div>
             <div className='card-genre'>{props.data.genre}</div>
             <div className='card-subtitle'>{props.data.subtitle}</div>
-            <div className='card-studio'>Студия: {props.data.studio}</div>
+            <div className='card-review'>{props.data.review}</div>
             <div className='card-premiered-date'>Дата премьеры: {props.data.premiered_date}</div>
+            <div className='card-studio'>Студия: {props.data.studio}</div>
             <div className='card-director'>{ props.data.director ? 'Режисер:' : null } {props.data.director}</div>
             <div className='card-writer'>{ props.data.writer && 'Автор сценария:' } {props.data.writer}</div>
-            <div className='card-review'>{props.data.review}</div>
             <a className='card-youtube ' href={props.data.youtube} target="_blank" rel="noopener noreferrer">
                 <img src='IMG/youtube.svg' /><span>You</span><span>Tube</span>
             </a>
+            <div className='card-country'>{props.data.country === 'United States of America' ? 'USA' : props.data.country}</div>
             <div className='card-pg-rating'>{props.data.pg_rating}</div>
-            { props.data.rating && <div className='card-rating' ><span>Рейтинг TMDB </span>{props.data.rating.toFixed(1)}</div> }
-            {/* { props.data.rating && <div className='card-rating' >< Rating rating={props.data.rating.toFixed(1)} /></div> } */}
+            { props.data.rating && <div className='card-rating' >< Rating rating={props.data.rating.toFixed(1)} radius={mobile ? 22.5 : 36} /></div> }
         </div>
     )
 }
@@ -215,7 +228,7 @@ const Content = (props: { sort: string, order: string }) => {
     }
 
     return (
-        <>  
+        <>
             { !loaded && <CircularProgressIndicator timeout={500} className='cpi' /> }
             { content.length != 0
                 ? content.map( (data: {[index: string]: any}) => <Card key={data.id} data={data}/>) 
