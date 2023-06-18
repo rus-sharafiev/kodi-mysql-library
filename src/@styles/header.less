@@ -1,0 +1,36 @@
+header {
+
+    .logo {
+        height: 10px;
+    }
+
+    // &.scrolled md-tabs {
+    //     position: fixed;
+    //     top: 0;
+    // }
+
+    md-tabs {
+
+        md-tab {
+            md-icon {
+                --md-icon-font-variation-settings: 'FILL' 0;
+                transition: .2s linear;
+            }
+
+            &[selected] md-icon {
+                --md-icon-font-variation-settings: 'FILL' 1;
+            }
+        }
+    }
+
+    @media (min-width: 500px) {
+        md-tabs {
+            justify-content: flex-start;
+            padding: 0 12px;
+
+            md-tab {
+                max-width: 250px;
+            }
+        }
+    }
+}

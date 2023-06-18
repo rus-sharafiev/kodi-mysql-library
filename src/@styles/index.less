@@ -1,0 +1,76 @@
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--md-sys-color-primary);
+    background-clip: content-box;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    opacity: 0.3;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+
+    --md-icon-font: 'Material Symbols Rounded';
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+input[data-autocompleted] {
+    background-color: transparent !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+@size: {
+    mobile: 550px;
+    tablet: 930px;
+}
+
+// --------------------------------------------------------------------------------
+
+html,
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: var(--md-sys-color-background);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+
+    display: flex;
+    justify-content: center;
+
+    width: 100vw;
+    overflow-x: hidden;
+}
+
+#root {
+    display: grid;
+    min-width: 100%;
+
+    @media (min-width: 1180px) {
+        min-width: 1182px;
+    }
+}
+
+@import "./theme/index.less";
+@import "./header.less";
+@import "./main.less";
