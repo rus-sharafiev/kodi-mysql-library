@@ -7,12 +7,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--md-sys-color-primary);
+    background: var(--md-sys-color-outline-variant);
     background-clip: content-box;
     border: 3px solid transparent;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
-    opacity: 0.3;
 }
 
 * {
@@ -63,11 +62,11 @@ body {
 }
 
 #root {
-    display: grid;
-    min-width: 100%;
+    width: 100%;
+    padding: 40px 0;
 
     @media (min-width: 1180px) {
-        min-width: 1182px;
+        width: 1182px;
     }
 }
 
