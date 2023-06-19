@@ -1,36 +1,21 @@
 header {
+    min-height: 50px;
 
     .logo {
-        height: 10px;
-    }
+        fill: var(--md-sys-color-primary);
 
-    // &.scrolled md-tabs {
-    //     position: fixed;
-    //     top: 0;
-    // }
+        position: fixed;
+        left: 20px;
+        top: 20px;
+        height: 170px;
 
-    md-tabs {
+        &-mobile {
+            fill: var(--md-sys-color-primary);
 
-        md-tab {
-            md-icon {
-                --md-icon-font-variation-settings: 'FILL' 0;
-                transition: .2s linear;
-            }
-
-            &[selected] md-icon {
-                --md-icon-font-variation-settings: 'FILL' 1;
-            }
+            max-width: 500px;
+            padding: 0 30px 10px;
         }
     }
 
-    @media (min-width: 500px) {
-        md-tabs {
-            justify-content: flex-start;
-            padding: 0 12px;
 
-            md-tab {
-                max-width: 250px;
-            }
-        }
-    }
 }
