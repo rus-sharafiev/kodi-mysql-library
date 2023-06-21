@@ -6,6 +6,7 @@ import "@material/web/tabs/tabs"
 import "@material/web/tabs/tab"
 import "@material/web/icon/icon"
 import "@material/web/elevation/elevation"
+import "@material/web/iconbutton/standard-icon-button"
 
 // Swiper
 import { register as registerSwiper } from 'swiper/element/bundle'
