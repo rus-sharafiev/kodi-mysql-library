@@ -21,7 +21,7 @@ export const Cards: React.FC = () => {
     const handleScroll = () => {
         !!main.current && main.current.classList.toggle(
             'scrolled',
-            main.current.getBoundingClientRect().top < 0
+            main.current.getBoundingClientRect().top < -28
         )
     }
 
