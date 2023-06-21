@@ -1,25 +1,28 @@
 import { useGetMoviesQuery } from "../store/api/api"
+import proxyImage from "../utils/proxyImage"
+import Rating from "./Rating"
 
 // --------------------------------------------------------------------------------
 
-const proxyImage = (url: string) => {
-    if (!url) return;
-    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-
-    return (googleProxyURL + encodeURIComponent(url));
-}
-
 export const Movies: React.FC = () => {
     const { data: movies, isFetching } = useGetMoviesQuery()
-    console.log(movies)
 
     return (
-        <>
+        <div className="cards">
             {movies && movies.map(movie =>
                 <div className="card" key={`movie-${movie.id}`}>
-                    <img src={proxyImage(movie.art.poster.replace('original', 'w185'))} />
+                    <div className="poster">
+                        <md-elevation></md-elevation>
+                        <img src={proxyImage(movie.art.poster.replace('original', 'w300'))} />
+                    </div>
+                    <div className="desc">
+                        <div className="title body-small">{movie.title}</div>
+
+                        <Rating rating={movie.rating} />
+                        <div className="rating">{movie.rating.toFixed(1)}</div>
+                    </div>
                 </div>
             )}
-        </>
+        </div>
     )
 }
