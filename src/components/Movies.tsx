@@ -17,9 +17,7 @@ export const Movies: React.FC = () => {
                     </div>
                     <div className="desc">
                         <div className="title body-small">{movie.title}</div>
-
                         <Rating rating={movie.rating} />
-                        <div className="rating">{movie.rating.toFixed(1)}</div>
                     </div>
                 </div>
             )}
