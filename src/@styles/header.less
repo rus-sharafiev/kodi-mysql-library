@@ -12,8 +12,13 @@ header {
         &-mobile {
             fill: var(--md-sys-color-primary);
 
-            max-width: 460px;
-            padding: calc(20vh - 10vw) 60px;
+            max-width: 300px;
+            padding: 60px 20px;
+
+            @media (max-width: 605px) {
+                max-width: 460px;
+                padding: calc(20vh - 10vw) 80px;
+            }
         }
     }
 
