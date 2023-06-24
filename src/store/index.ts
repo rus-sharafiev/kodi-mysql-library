@@ -8,11 +8,13 @@ import {
 
 // RTK apis
 import { api } from './api/api'
+import bottomSheetReducer from './reducers/bottomSheetSlice'
 
 // --------------------------------------------------------------------------------
 
 export const store = configureStore({
     reducer: {
+        bottomSheet: bottomSheetReducer,
         [api.reducerPath]: api.reducer,
     },
     middleware: (gDM) => gDM({ serializableCheck: false }).concat([
