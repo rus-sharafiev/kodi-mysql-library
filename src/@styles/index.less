@@ -43,22 +43,25 @@ input:-webkit-autofill:focus {
 
 // --------------------------------------------------------------------------------
 
-html,
-body {
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    background: var(--md-sys-color-background);
+html {
+    @media (min-width: 1180px) {
+        scrollbar-gutter: stable both-edges;
+    }
 }
 
 body {
     font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: var(--md-sys-color-background);
 
     display: flex;
     justify-content: center;
 
-    // width: 100vw;
-    // overflow-x: hidden;
+    &.no-scroll {
+        overflow: hidden;
+    }
 }
 
 #root {
@@ -73,3 +76,4 @@ body {
 @import "./theme/index.less";
 @import "./header.less";
 @import "./main.less";
+@import "./bottom-sheet.less";
