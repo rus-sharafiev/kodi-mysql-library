@@ -22,6 +22,7 @@ export interface Movie {
     director: string
     pgRating: string
     subtitle: string
+    duration: string
     dateAdded: string
     playCount: number
     premiered: string

@@ -1,20 +1,128 @@
 .movie {
+    display: grid;
+    grid: 12px repeat(3, min-content) 1fr repeat(5, min-content) 12px repeat(2, min-content) / 300px 1fr;
+    grid-template-areas:
+        "pstr ."
+        "pstr titl"
+        "pstr ortl"
+        "pstr sbtl"
+        "pstr ...."
+        "pstr gngr"
+        "pstr durt"
+        "pstr prmd"
+        "pstr stud"
+        "pstr cntr"
+        "pstr ...."
+        "dscr dscr"
+        ". ytb"
+    ;
+    gap: 12px 24px;
+
+    color: var(--md-sys-color-on-surface);
+
+    @media (max-width: 605px) {
+        grid: repeat(11, min-content) / 1fr;
+        grid-template-areas:
+            "pstr"
+            "titl"
+            "ortl"
+            "sbtl"
+            "gngr"
+            "durt"
+            "prmd"
+            "stud"
+            "cntr"
+            "dscr"
+            "ytb"
+        ;
+        gap: 12px 24px;
+    }
+
+    div {
+        display: flex;
+        color: var(--md-sys-color-on-surface-variant);
+
+        span {
+            opacity: 0.5;
+            min-width: 150px;
+        }
+    }
 
     .poster {
+        grid-area: pstr;
+
         display: flex;
         align-items: center;
         justify-content: center;
 
         border-radius: 4px;
         position: relative;
-        width: min-content;
+        width: 100%;
 
         img {
             aspect-ratio: 185/275;
             border-radius: inherit;
+            width: 100%;
             object-fit: cover;
         }
 
         --md-elevation-level: 2;
     }
+
+    .title {
+        grid-area: titl;
+        font-size: 45px;
+        line-height: 0.8;
+        color: var(--md-sys-color-on-surface);
+
+        @media (max-width: 605px) {
+            font-size: 36px;
+        }
+    }
+
+    .original-title {
+        grid-area: ortl;
+        font-size: 28px;
+        line-height: 0.8;
+        opacity: 0.1;
+
+        @media (max-width: 605px) {
+            font-size: 24px;
+        }
+    }
+
+    .subtitle {
+        grid-area: sbtl;
+        font-style: italic;
+        margin-top: 8px;
+    }
+
+    .duration {
+        grid-area: durt;
+    }
+
+    .country {
+        grid-area: cntr;
+    }
+
+    .genre {
+        grid-area: gngr;
+    }
+
+    .premiered {
+        grid-area: prmd;
+    }
+
+    .studio {
+        grid-area: stud;
+    }
+
+    .desc {
+        grid-area: dscr;
+    }
+
+    .youtube {
+        grid-area: ytb;
+    }
+
 }
