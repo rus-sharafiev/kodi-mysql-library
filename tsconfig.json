@@ -1,9 +1,6 @@
 {
     "compilerOptions": {
-        "lib": [
-            "es6",
-            "dom"
-        ],
+        "target": "ES2022",
         "strict": true,
         "noEmit": true,
         "allowJs": true,
