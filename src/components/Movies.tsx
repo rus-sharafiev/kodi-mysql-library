@@ -1,26 +1,27 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useEffect } from "react"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useAppDispatch } from "../store"
 import { useGetMoviesQuery } from "../store/api/api"
 import { hideBottomSheet, setBottomSheetData } from "../store/reducers/bottomSheetSlice"
+//components
 import proxyImage from "../utils/proxyImage"
 import Rating from "./Rating"
-import { useEffect, useRef } from "react"
 
 // --------------------------------------------------------------------------------
 
 export const Movies: React.FC = () => {
-    const { data: movies } = useGetMoviesQuery()
+    const { pathname } = useLocation()
+    const { data: movies } = useGetMoviesQuery('', { skip: pathname !== '/movies' })
     const dispatch = useAppDispatch()
     const { slug } = useParams()
     const nav = useNavigate()
-    const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (!slug) dispatch(hideBottomSheet())
     }, [slug])
 
     return (
-        <div className="cards" ref={ref}>
+        <div className="cards">
             {movies && movies.map(movie =>
                 <div className="card" key={`movie-${movie.id}`}>
                     <div className="poster" onClick={() => {

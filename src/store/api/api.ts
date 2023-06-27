@@ -13,7 +13,7 @@ export const api = createApi({
     tagTypes: ['Movie', 'Tv'],
     endpoints: (builder) => ({
 
-        getMovies: builder.query<Movie[], void>({
+        getMovies: builder.query<Movie[], ''>({
             query: () => ({ url: ApiRoutes.MOVIES }),
             providesTags: (result) =>
                 result
@@ -21,7 +21,7 @@ export const api = createApi({
                     : ['Movie']
         }),
 
-        getTvs: builder.query<Tv[], void>({
+        getTvs: builder.query<Tv[], ''>({
             query: () => ({ url: ApiRoutes.TVS }),
             providesTags: (result) =>
                 result
