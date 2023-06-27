@@ -27,4 +27,15 @@ declare global {
             ['swiper-slide']: WebComponent<Swiper>
         }
     }
+
+    interface String {
+        toHHMMSS(): string
+    }
+
+    interface Number {
+        declination(titles: string[]): string
+    }
+
 }
+
+export { }
