@@ -12,16 +12,36 @@ import "@material/web/iconbutton/standard-icon-button"
 // Swiper
 import { register as registerSwiper } from 'swiper/element/bundle'
 
+// Service worker
+import { Workbox } from 'workbox-window'
+
+// utils
+import './utils'
+
 // components
-import { Header } from './components/Header'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Cards } from './components/Cards'
-import BottomSheet from './components/BottomSheet'
+import { Header } from './components/Header'
+import { BottomSheet } from './components/BottomSheet'
+import { useEffect } from 'react'
 
 // ----------------------------------------------------------------------
 
 registerSwiper()
 
+// if ('serviceWorker' in navigator) {
+//     const wb = new Workbox('/sw.js')
+//     wb.register()
+// }
+
 export const App: React.FC = () => {
+    const { pathname } = useLocation()
+    const nav = useNavigate()
+
+    useEffect(() => {
+        if (pathname === '/' || pathname.split('/').length !== 2)
+            nav('/movies', { replace: true })
+    }, [])
 
     return (
         <>
