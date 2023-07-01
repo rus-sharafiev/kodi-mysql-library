@@ -11,10 +11,14 @@
     overflow: auto;
     scrollbar-gutter: stable both-edges;
 
-    transition: top .3s ease-in-out;
+    transition: top .3s linear;
 
     &.hidden {
         top: 100%;
+    }
+
+    @media (min-width: 700px) {
+        left: calc(100vw - 100% - 10px);
     }
 
     @media (min-width: 1180px) {
@@ -22,7 +26,7 @@
         margin: 0 auto;
         padding: 18px 12px;
 
-        top: 12px;
+        top: 10px;
         left: calc(100vw - 100% - 20px);
 
         border: 1px solid var(--md-sys-color-outline-variant);
@@ -31,13 +35,19 @@
 
     md-standard-icon-button {
         position: absolute;
-        top: 6px;
-        right: -3px;
+        top: 40px;
+        right: 30px;
+
+        @media (min-width: 1180px) {
+            top: 8px;
+            right: 0;
+        }
     }
 
+    .tv,
     .movie {
         display: grid;
-        grid: 12px repeat(3, min-content) 1fr repeat(5, min-content) 40px repeat(1, min-content) / 350px 1fr;
+        grid: 12px repeat(3, min-content) 1fr repeat(5, min-content) 40px repeat(2, min-content) / 352px 1fr;
         grid-template-areas:
             "pstr ."
             "pstr titl"
@@ -51,13 +61,14 @@
             "pstr cntr"
             "rate dscr"
             "ytb dscr"
+            "sn sn"
         ;
         gap: 12px 36px;
 
         color: var(--md-sys-color-on-surface);
 
-        @media (max-width: 605px) {
-            grid: min-content 60px repeat(9, min-content) / 1fr;
+        @media (max-width: 700px) {
+            grid: min-content 60px repeat(10, min-content) / 1fr;
             grid-template-areas:
                 "pstr"
                 "rate"
@@ -71,12 +82,13 @@
                 "cntr"
                 "dscr"
                 "ytb"
+                "sn"
             ;
             gap: 8px;
             padding: 4px;
         }
 
-        div {
+        &>div {
             display: flex;
             flex-direction: column;
             color: var(--md-sys-color-on-surface-variant);
@@ -89,7 +101,7 @@
             }
         }
 
-        .poster {
+        &>.poster {
             grid-area: pstr;
 
             display: flex;
@@ -113,7 +125,7 @@
 
         }
 
-        .rating-container {
+        &>.rating-container {
             grid-area: rate;
 
             padding: 0 12px;
@@ -123,12 +135,12 @@
                 position: absolute;
                 width: 60px;
                 height: 60px;
-                margin-top: -22px;
+                margin-top: -20px;
                 margin-left: calc(100% - 80px);
 
                 z-index: -1;
 
-                @media (max-width: 605px) {
+                @media (max-width: 700px) {
                     margin-top: -16px;
                 }
 
@@ -169,14 +181,14 @@
             }
         }
 
-        .title {
+        &>.title {
             grid-area: titl;
 
             font-size: 45px;
             line-height: 0.8;
             color: var(--md-sys-color-on-surface);
 
-            @media (max-width: 605px) {
+            @media (max-width: 700px) {
                 font-size: 36px;
             }
         }
@@ -188,7 +200,7 @@
             line-height: 0.8;
             opacity: 0.1;
 
-            @media (max-width: 605px) {
+            @media (max-width: 700px) {
                 font-size: 24px;
             }
         }
@@ -220,7 +232,7 @@
             grid-area: stud;
         }
 
-        .desc {
+        &>.desc {
             grid-area: dscr;
         }
 
@@ -243,5 +255,32 @@
             --md-elevation-level: 2;
         }
 
+        .seasons-container {
+            grid-area: sn;
+
+            @media (min-width: 1180px) {
+                max-width: 990px;
+            }
+
+        }
+
+    }
+
+    #swipe-area {
+        display: none;
+
+        @media (max-width: 700px) {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50vh;
+            z-index: 1;
+
+            &.hidden {
+                display: none;
+            }
+        }
     }
 }
