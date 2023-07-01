@@ -1,8 +1,9 @@
+import { memo } from "react"
 import useMobile from "../hooks/useMobile"
 
 // --------------------------------------------------------------------------------
 
-export const Logo: React.FC = () => {
+export const Logo: React.FC = memo(() => {
     const mobile = useMobile(1540)
 
     return (
@@ -143,4 +144,4 @@ export const Logo: React.FC = () => {
                     l11.2-19.6h6.8l-16.9,29V253h-6.2L594.8,235.8L594.8,235.8z"/>
             </svg>
     )
-}
+})

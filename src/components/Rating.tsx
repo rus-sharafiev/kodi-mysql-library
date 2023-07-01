@@ -4,7 +4,7 @@ interface RatingProps {
     rating: number,
 }
 
-export const Rating: React.FC<RatingProps> = ({ rating }) => {
+export const Rating: React.FC<RatingProps> = memo(({ rating }) => {
 
     let hue = (rating - 5.5) * 35
     let color: string
@@ -42,6 +42,6 @@ export const Rating: React.FC<RatingProps> = ({ rating }) => {
             <div className="rating-text">{rating.toFixed(1)}</div>
         </div>
     )
-}
+})
 
 export default Rating
